@@ -4,7 +4,7 @@ import de.slg.leoapp.checkAuthorized
 import de.slg.leoapp.module.user.data.PostArbitraryId
 import de.slg.leoapp.module.user.data.PostChecksum
 import de.slg.leoapp.module.user.data.PostUser
-import de.slg.leoapp.module.user.data.TaskResponse
+import de.slg.leoapp.TaskResponse
 import de.slg.leoapp.respondError
 import de.slg.leoapp.respondSuccess
 import io.ktor.application.call

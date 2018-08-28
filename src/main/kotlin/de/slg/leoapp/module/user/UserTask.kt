@@ -1,5 +1,6 @@
 package de.slg.leoapp.module.user
 
+import de.slg.leoapp.TaskResponse
 import de.slg.leoapp.module.user.data.*
 
 object UserTask {

@@ -1,38 +1,31 @@
 package de.slg.leoapp.module.survey.data
 
-data class Survey(val id: Int,
-                  val author: String,
-                  val title: String,
-                  val description: String,
-                  val multiple: Boolean,
-                  val createdate: Long,
-                  val answers: Array<Answer>) {
+import java.util.*
 
-    data class Answer(val id: Int, val content: String, val votes: Int)
-
+data class PostSurvey(val author: Int, val title: String, val description: String, val recipient: String, val multiple: Boolean, val answers: Array<String>) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as Survey
+        other as PostSurvey
 
-        if (id != other.id) return false
         if (author != other.author) return false
         if (title != other.title) return false
         if (description != other.description) return false
+        if (recipient != other.recipient) return false
         if (multiple != other.multiple) return false
-        if (createdate != other.createdate) return false
+        if (!Arrays.equals(answers, other.answers)) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = id
-        result = 31 * result + author.hashCode()
+        var result = author
         result = 31 * result + title.hashCode()
         result = 31 * result + description.hashCode()
+        result = 31 * result + recipient.hashCode()
         result = 31 * result + multiple.hashCode()
-        result = 31 * result + createdate.hashCode()
+        result = 31 * result + Arrays.hashCode(answers)
         return result
     }
 }

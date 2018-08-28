@@ -7,4 +7,5 @@ data class PostEntry(@EditIndicator val id: Int?,
                      val title: String?,
                      @Editable val content: String?,
                      val recipient: String?,
+                     val author: Int,
                      @Editable val deadline: Long?)

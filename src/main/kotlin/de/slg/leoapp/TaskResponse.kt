@@ -1,4 +1,4 @@
-package de.slg.leoapp.module.user.data
+package de.slg.leoapp
 
 enum class TaskResponse {
     SUCCESS, CHECKSUM_INVALID, GENERIC_ERROR
