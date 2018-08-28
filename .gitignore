@@ -1,0 +1,5 @@
+.idea/*
+.idea/
+out
+.gradle
+src/main/kotlin/de/slg/leoapp/Secure.kt
