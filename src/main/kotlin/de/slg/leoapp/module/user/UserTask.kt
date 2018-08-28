@@ -1,11 +1,26 @@
 package de.slg.leoapp.module.user
 
+import de.slg.leoapp.Secure
 import de.slg.leoapp.TaskResponse
 import de.slg.leoapp.module.user.data.*
+import org.jetbrains.exposed.sql.Database
 
 object UserTask {
 
+    private val database: Database
+
+    init {
+        val credentials = Secure.getDatabaseCredentials()
+
+        database = Database
+                .connect("jdbc:mysql://ucloud.sql.regioit.intern:3306/leoapp",
+                        driver = "com.mysql.jdbc.Driver",
+                        user = credentials.first,
+                        password = credentials.second)
+    }
+
     fun getAllUsers(): List<User> {
+
         TODO()
     }
 
