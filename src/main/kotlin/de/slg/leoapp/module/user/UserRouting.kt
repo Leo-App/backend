@@ -1,14 +1,14 @@
 package de.slg.leoapp.module.user
 
-import de.slg.leoapp.checkAuthorized
+import de.slg.leoapp.*
 import de.slg.leoapp.module.user.data.PostArbitraryId
-import de.slg.leoapp.module.user.data.PostChecksum
+import de.slg.leoapp.module.user.data.PostArbitraryIds
+import de.slg.leoapp.module.user.data.PostDeviceChecksum
 import de.slg.leoapp.module.user.data.PostUser
-import de.slg.leoapp.TaskResponse
-import de.slg.leoapp.respondError
-import de.slg.leoapp.respondSuccess
 import io.ktor.application.call
+import io.ktor.request.isMultipart
 import io.ktor.request.receive
+import io.ktor.request.receiveMultipart
 import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.delete
@@ -16,7 +16,7 @@ import io.ktor.routing.get
 import io.ktor.routing.post
 
 fun Route.user() {
-    //list all registered users
+    //list all registered Users
     get("/user") {
         if (!call.request.checkAuthorized()) return@get
         call.respond(UserTask.getAllUsers())
@@ -32,7 +32,13 @@ fun Route.user() {
             return@get
         }
 
-        call.respond(UserTask.getUserByIdentifier(id))
+        val user = UserTask.getUserByIdentifier(id)
+        if (user == null) {
+            call.respondError(400, "$id is not a valid user identifier")
+            return@get
+        }
+
+        call.respond(user)
     }
 
     //get the ids of survey answers the user has voted for
@@ -48,7 +54,7 @@ fun Route.user() {
         call.respond(UserTask.getUserSurveyVotes(id))
     }
 
-    //register a new vote for the specified user for an answer id
+    //register a new vote / votes for the specified user for an answer id
     post("user/{id}/votes") {
         if (!call.request.checkAuthorized()) return@post
         val id = call.parameters["id"]
@@ -58,13 +64,22 @@ fun Route.user() {
             return@post
         }
 
-        val data = call.receive<PostArbitraryId>()
-        UserTask.registerSurveyVote(id, data)
+        val postId = call.receive<PostArbitraryId>()
+        if (postId.id != null) {
+            UserTask.registerSurveyVote(id, postId)
+        } else {
+            val postIds = call.receive<PostArbitraryIds>()
+            if (postIds.ids == null) {
+                call.respondError(400, "Bad request")
+                return@post
+            }
+            UserTask.registerSurveyVotes(id, postIds)
+        }
         call.respondSuccess()
     }
 
     //add new user device. If the user with id is not yet known, a new one will be registered. This is the only way to
-    //add new users! No need to authorize.
+    //add new Users! No need to authorize.
     post("/user/{id}/device") {
         val id = call.parameters["id"]
 
@@ -73,13 +88,14 @@ fun Route.user() {
             return@post
         }
 
-        val checksum = call.receive<PostChecksum>()
+        val checksum = call.receive<PostDeviceChecksum>()
         val taskStatus: TaskResponse = UserTask.addDeviceOrRegister(id, checksum)
 
         when(taskStatus) {
             TaskResponse.SUCCESS -> call.respondSuccess()
             TaskResponse.CHECKSUM_INVALID -> call.respondError(400, "The provided checksum is invalid")
             TaskResponse.GENERIC_ERROR -> call.respondError(400, "Bad request")
+            TaskResponse.ID_INVALID -> call.respondError(400, "The provided id does not exist yet")
         }
     }
 
@@ -95,6 +111,25 @@ fun Route.user() {
 
         val user = call.receive<PostUser>()
         UserTask.updateUser(id, user)
+        call.respondSuccess()
+    }
+
+    //set the profilepicture of the user with id
+    post("/user/{id}/picture") {
+        val id = call.parameters["id"]
+
+        if (id == null) {
+            call.respondError(400, "You need to use a valid user id")
+            return@post
+        }
+
+        if (!call.request.isMultipart()) {
+            call.respondError(400, "Bad request")
+            return@post
+        }
+
+        UserTask.setProfilePictureForUser(id, call.receiveMultipart())
+
         call.respondSuccess()
     }
 

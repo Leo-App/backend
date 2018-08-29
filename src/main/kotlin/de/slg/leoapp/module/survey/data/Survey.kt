@@ -6,7 +6,7 @@ data class Survey(val id: Int,
                   val description: String,
                   val multiple: Boolean,
                   val createdate: Long,
-                  val answers: Array<Answer>) {
+                  val answers: List<Answer>) {
 
     data class Answer(val id: Int, val content: String, val votes: Int)
 

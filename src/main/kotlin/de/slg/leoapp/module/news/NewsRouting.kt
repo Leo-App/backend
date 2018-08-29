@@ -1,10 +1,8 @@
 package de.slg.leoapp.module.news
 
-import de.slg.leoapp.module.news.data.PostEntry
 import de.slg.leoapp.respondError
 import de.slg.leoapp.respondSuccess
 import io.ktor.application.call
-import io.ktor.http.HttpStatusCode
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.Route
@@ -25,18 +23,6 @@ fun Route.news() {
 
         val entry = NewsTask.getEntryById(id.toInt()) ?: return@get
         call.respond(entry)
-    }
-
-    //get all currently relevant entries for the user with {id}
-    get("/news/recipients/{id}") {
-        val id = call.parameters["id"]
-
-        if (id == null || id.toIntOrNull() == null) {
-            call.respondError(400, "You need to use a valid user id")
-            return@get
-        }
-
-        call.respond(NewsTask.getEntriesForUser(id.toInt()))
     }
 
     //add a new entry or update its "editable" properties if id is supplied

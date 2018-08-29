@@ -31,7 +31,9 @@ fun Route.survey() {
             return@get
         }
 
-        call.respond(SurveyTask.getSurveyInformation(id.toInt()))
+        val survey = SurveyTask.getSurveyInformation(id.toInt())
+        if (survey == null) call.respondError(400, "Bad request")
+        else call.respond(survey)
     }
 
     //add a new survey
@@ -59,7 +61,7 @@ fun Route.survey() {
             return@delete
         }
 
-        SurveyTask.deleteSurvey(id)
+        SurveyTask.deleteSurvey(id.toInt())
         call.respondSuccess()
     }
 }
