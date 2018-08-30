@@ -1,5 +1,6 @@
 package de.slg.leoapp
 
+import org.jetbrains.exposed.dao.IntIdTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table
 
@@ -34,7 +35,7 @@ object Surveys : Table("surveys") {
 }
 
 object Answers : Table("answers") {
-    val id: Column<Int> = integer("id").primaryKey()
+    val id: Column<Int> = integer("id").primaryKey().autoIncrement()
     val survey: Column<Int> = integer("survey")
     val content: Column<String> = varchar("content", 255)
 }
@@ -45,8 +46,7 @@ object SurveyRecipients : Table("survey_recipients") {
     val custom: Column<Boolean> = bool("custom")
 }
 
-object Entries : Table("entries") {
-    val id: Column<Int> = integer("id").primaryKey()
+object Entries : IntIdTable("entries") {
     val author: Column<Int> = integer("author")
     val title: Column<String> = varchar("title", 255)
     val content: Column<String> = text("content")

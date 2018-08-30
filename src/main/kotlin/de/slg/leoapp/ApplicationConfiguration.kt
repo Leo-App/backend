@@ -76,5 +76,3 @@ suspend fun ApplicationRequest.checkAuthorized(): Boolean {
     }
     return true
 }
-
-class Brick : Throwable() //lol
