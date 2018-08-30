@@ -13,11 +13,47 @@ import org.joda.time.DateTimeZone
 object NewsTask {
 
     fun getEntryById(id: Int): Entry? {
-        TODO()
+        return runOnDatabase {
+            val entryList = Entries.select { Entries.id eq id }
+                    .map {
+                        Entry(
+                                id,
+                                it[Entries.author],
+                                it[Entries.title],
+                                it[Entries.content],
+                                it[Entries.views],
+                                it[Entries.deadline].millis,
+                                it[Entries.attachment]
+                        )
+                    }
+
+            if (entryList.isNotEmpty()) entryList[0] else null
+        }
     }
 
+
     fun getEntriesForUser(id: String): List<Entry> {
-        TODO()
+        return runOnDatabase {
+
+            if (id.toIntOrNull() == null) {
+
+                (Entries innerJoin EntryRecipients innerJoin Users)
+                        .select { (EntryRecipients.user eq Users.id) and (Entries.id eq EntryRecipients.entry) and (Users.defaultname eq id) }
+                        .map {
+                            Entry(
+                                    it[Entries.id].value,
+                                    it[Entries.author],
+                                    it[Entries.title],
+                                    it[Entries.content],
+                                    it[Entries.views],
+                                    it[Entries.deadline].millis,
+                                    it[Entries.attachment]
+                            )
+                        }
+            }
+
+            emptyList()
+        }
     }
 
     fun addOrUpdateEntry(entry: PostEntry): Boolean {
@@ -37,18 +73,23 @@ object NewsTask {
                     it[Entries.author] = entry.author
                 }
 
+                val isCustomRecipient: Boolean
+                
                 val recipients: List<Int> = if (entry.recipient != null) {
                     val targetedGrades = getTargetedGrades(entry.recipient)
+                    isCustomRecipient = false
                     Users.slice(Users.id).select {
                         Users.grade inList targetedGrades
                     }.map { it[Users.id] }
                 } else {
+                    isCustomRecipient = true
                     entry.recipients ?: emptyList()
                 }
 
                 EntryRecipients.batchInsert(recipients) { input ->
                     this[EntryRecipients.user] = input
                     this[EntryRecipients.entry] = id.value
+                    this[EntryRecipients.custom] = isCustomRecipient
                 }
 
             } else {
