@@ -38,3 +38,25 @@ object Answers : Table("answers") {
     val survey: Column<Int> = integer("survey")
     val content: Column<String> = varchar("content", 255)
 }
+
+object SurveyRecipients : Table("survey_recipients") {
+    val user: Column<Int> = integer("user").primaryKey()
+    val survey: Column<Int> = integer("survey").primaryKey()
+    val custom: Column<Boolean> = bool("custom")
+}
+
+object Entries : Table("entries") {
+    val id: Column<Int> = integer("id").primaryKey()
+    val author: Column<Int> = integer("author")
+    val title: Column<String> = varchar("title", 255)
+    val content: Column<String> = text("content")
+    val views: Column<Int> = integer("views")
+    val deadline = date("valid_until")
+    val attachment: Column<String> = varchar("attachment", 255)
+}
+
+object EntryRecipients : Table("entry_recipients") {
+    val user: Column<Int> = integer("user").primaryKey()
+    val entry: Column<Int> = integer("survey").primaryKey()
+    val custom: Column<Boolean> = bool("custom")
+}

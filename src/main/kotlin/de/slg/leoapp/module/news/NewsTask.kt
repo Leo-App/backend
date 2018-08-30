@@ -9,7 +9,7 @@ object NewsTask {
         TODO()
     }
 
-    fun getEntriesForUser(id: Int): List<Entry> {
+    fun getEntriesForUser(id: String): List<Entry> {
         TODO()
     }
 
