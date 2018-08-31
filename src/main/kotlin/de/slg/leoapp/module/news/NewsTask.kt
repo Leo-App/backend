@@ -3,6 +3,7 @@ package de.slg.leoapp.module.news
 import de.slg.leoapp.*
 import de.slg.leoapp.annotation.EditIndicator
 import de.slg.leoapp.annotation.Editable
+import de.slg.leoapp.annotation.Optional
 import de.slg.leoapp.module.news.data.Entry
 import de.slg.leoapp.module.news.data.PostEntry
 import de.slg.leoapp.module.news.data.TargetOption
@@ -63,7 +64,15 @@ object NewsTask {
             if (editIndicator == null) {
 
                 for (cur in entry.javaClass.fields) {
-                    if (cur.getAnnotation(EditIndicator::class.java) == null && cur.get(entry) == null) return@runOnDatabase false
+                    if (cur.getAnnotation(EditIndicator::class.java) == null && cur.get(entry) == null) {
+                        val annotation = cur.getAnnotation(Optional::class.java) ?: return@runOnDatabase false
+                        if (annotation.replacement != "") {
+                            val replacement = entry.javaClass.getField(annotation.replacement)
+                            if (replacement?.get(entry) == null) {
+                                return@runOnDatabase false
+                            }
+                        }
+                    }
                 }
 
                 val id = Entries.insertAndGetId {
@@ -74,7 +83,7 @@ object NewsTask {
                 }
 
                 val isCustomRecipient: Boolean
-                
+
                 val recipients: List<Int> = if (entry.recipient != null) {
                     val targetedGrades = getTargetedGrades(entry.recipient)
                     isCustomRecipient = false
