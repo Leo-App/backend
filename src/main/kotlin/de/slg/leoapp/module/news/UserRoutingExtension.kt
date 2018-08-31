@@ -6,6 +6,9 @@ import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.get
 
+/**
+ * Adds the possibility to query all entries that are currently relevant for a specific user, identified by {id}.
+ */
 fun Route.userExtensionNews() {
     //get all currently relevant entries for the user with {id}
     get("/user/{id}/news") {

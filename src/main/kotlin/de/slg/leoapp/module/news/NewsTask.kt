@@ -105,11 +105,12 @@ object NewsTask {
                 Entries.update(where = { editIndicator.first eq editIndicator.second }, body = {
                     for (cur in entry.javaClass.fields) {
                         val annotation = cur.getAnnotation(Editable::class.java) ?: continue
+                        val field = cur.get(entry) ?: continue
 
                         if (annotation.databaseName != "") {
-                            it[Entries.getColumnForFieldName(annotation.databaseName)!!] = cur.get(entry)
+                            it[Entries.getColumnForFieldName(annotation.databaseName)!!] = field
                         } else {
-                            it[Entries.getColumnForFieldName(cur.name)!!] = cur.get(entry)
+                            it[Entries.getColumnForFieldName(cur.name)!!] = field
                         }
                     }
                 })

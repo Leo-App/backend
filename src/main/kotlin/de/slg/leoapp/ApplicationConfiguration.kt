@@ -27,6 +27,13 @@ const val PATH_TO_PROFILE_PICTURE = "$MEDIA_LOCATION/usr_%d_pp"
 
 //DISCLAIMER: The API only logs important errors, negligible errors like redundant json fields, trying to change non existing
 //data, etc. get dropped. This may change in the future, but for now take that into account when debugging.
+
+/**
+ * In this function we register all modules which should be available at api runtime. Normally a module is responsible for management of
+ * one top level path, e.g. "/user". However it is possible to "extend" a module if it helps the logical structure of the api codebase
+ * (An example would be the option to list relevant news for a specific user "/user/{id}/entries": Here we provided the implementation
+ * in the news module).
+ */
 fun Application.module() {
     install(ContentNegotiation) {
         jackson {

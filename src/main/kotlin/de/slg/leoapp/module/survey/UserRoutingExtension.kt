@@ -6,6 +6,9 @@ import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.get
 
+/**
+ * Adds the possibility to query all surveys that are currently relevant for a specific user, identified by {id}.
+ */
 fun Route.userExtensionSurvey() {
     //get a list of all surveys relevant for me
     get("user/{id}/surveys") {
