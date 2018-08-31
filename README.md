@@ -4,7 +4,7 @@ LeoApp backend services, currently consisting of:
 ## LeoApp REST API
 
 This API provides a RESTful way to interact with the LeoApp database and thus improves on the old system. Currently supported features are user related interactions,
-news and (mood-)surveys.
+news and surveys.
 
 ### Authentication
 
