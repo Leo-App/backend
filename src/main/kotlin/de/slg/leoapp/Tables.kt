@@ -60,3 +60,10 @@ object EntryRecipients : Table("entry_recipients") {
     val entry: Column<Int> = integer("survey").primaryKey()
     val custom: Column<Boolean> = bool("custom")
 }
+
+object FeatureUsage : Table("feature_usage") {
+    val user: Column<Int> = integer("user").primaryKey()
+    val feature: Column<Long> = long("feature").primaryKey()
+    val interactions: Column<Int> = integer("interactions")
+    val averageTime: Column<Float> = float("average_time")
+}

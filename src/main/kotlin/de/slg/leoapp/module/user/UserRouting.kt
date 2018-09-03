@@ -1,10 +1,7 @@
 package de.slg.leoapp.module.user
 
 import de.slg.leoapp.*
-import de.slg.leoapp.module.user.data.PostArbitraryId
-import de.slg.leoapp.module.user.data.PostArbitraryIds
-import de.slg.leoapp.module.user.data.PostDeviceChecksum
-import de.slg.leoapp.module.user.data.PostUser
+import de.slg.leoapp.module.user.data.*
 import io.ktor.application.call
 import io.ktor.request.isMultipart
 import io.ktor.request.receive
@@ -52,6 +49,41 @@ fun Route.user() {
         }
 
         call.respond(UserTask.getUserSurveyVotes(id))
+    }
+
+    //returns the feature usage for a specific user
+    get("user/{id}/features") {
+        if (!call.request.checkAuthorized()) return@get
+        val id = call.parameters["id"]
+
+        if (id == null) {
+            call.respondError(400, "You need to use a valid user id")
+            return@get
+        }
+
+        call.respond(UserTask.getUserFeatureUsage(id))
+    }
+
+    //log a new feature interaction for user {id}
+    post("user/{id}/features") {
+        if (!call.request.checkAuthorized()) return@post
+        val id = call.parameters["id"]
+
+        if (id == null) {
+            call.respondError(400, "You need to use a valid user id")
+            return@post
+        }
+
+        val body = call.receive<PostFeatureUsage>()
+
+        if (body.featureId == null || body.time == null) {
+            call.respondError(400, "Bad Request")
+            return@post
+        }
+
+        UserTask.logNewFeatureInteraction(id, body)
+
+        call.respondSuccess()
     }
 
     //register a new vote / votes for the specified user for an answer id

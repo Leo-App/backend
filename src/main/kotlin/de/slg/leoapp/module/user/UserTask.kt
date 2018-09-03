@@ -131,6 +131,38 @@ object UserTask {
         }
     }
 
+    fun getUserFeatureUsage(id: String): List<FeatureStatistics> {
+        var numericId = id.toIntOrNull()
+        if (numericId == null) numericId = getIdFromDefaultName(id)
+
+        return runOnDatabase {
+            FeatureUsage.select { FeatureUsage.user eq numericId }.orderBy(FeatureUsage.averageTime, false).map {
+                FeatureStatistics(it[FeatureUsage.feature], it[FeatureUsage.interactions], it[FeatureUsage.averageTime])
+            }
+        }
+    }
+
+    fun logNewFeatureInteraction(id: String, body: PostFeatureUsage) {
+        var numericId = id.toIntOrNull()
+        if (numericId == null) numericId = getIdFromDefaultName(id)
+
+        runOnDatabase {
+            val average = FeatureUsage
+                    .slice(FeatureUsage.interactions, FeatureUsage.averageTime)
+                    .select { FeatureUsage.user eq numericId }
+                    .map { Pair(it[FeatureUsage.averageTime], it[FeatureUsage.interactions]) }
+
+            if (average.isEmpty()) return@runOnDatabase
+
+            FeatureUsage.insertOrUpdate(FeatureUsage.averageTime, FeatureUsage.interactions) {
+                it[user] = numericId
+                it[feature] = body.featureId!!
+                it[averageTime] = (average[0].first * average[0].second + body.time!!) / (average[0].second + 1)
+                it[interactions] = average[0].second + 1
+            }
+        }
+    }
+
     suspend fun setProfilePictureForUser(id: String, multipart: MultiPartData) {
         var numericId = id.toIntOrNull()
 
@@ -161,5 +193,4 @@ object UserTask {
 
         return if (ids.isEmpty()) null else ids[0]
     }
-
 }
