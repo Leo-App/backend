@@ -34,7 +34,7 @@ const val PATH_TO_PROFILE_PICTURE = "$MEDIA_LOCATION/usr_%d_pp"
  * (An example would be the option to list relevant news for a specific user "/user/{id}/entries": Here we provided the implementation
  * in the news module).
  */
-fun Application.module() {
+fun Application.main() {
     install(ContentNegotiation) {
         jackson {
             enable(SerializationFeature.INDENT_OUTPUT)

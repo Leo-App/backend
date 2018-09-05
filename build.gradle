@@ -10,18 +10,19 @@ buildscript {
     }
 }
 
-apply plugin: 'java'
 apply plugin: 'kotlin'
 apply plugin: 'application'
-apply plugin: 'kotlin-kapt'
+apply plugin: 'war'
 
-mainClassName = 'ServerKt'
+mainClassName = 'ApplicationConfigurationKt'
+webAppDirName = 'webapp'
+
 
 sourceCompatibility = 1.8
 compileKotlin { kotlinOptions.jvmTarget = "1.8" }
 compileTestKotlin { kotlinOptions.jvmTarget = "1.8" }
 
-kotlin { experimental { coroutines "enable" } }
+kotlin.experimental.coroutines = 'enable'
 
 repositories {
     mavenCentral()
@@ -32,7 +33,7 @@ repositories {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation "io.ktor:ktor-server-netty:$ktor_version"
+    implementation "io.ktor:ktor-server-servlet:$ktor_version"
     implementation "ch.qos.logback:logback-classic:1.2.1"
     implementation "com.fasterxml.jackson.core:jackson-databind:2.0.1"
     implementation "io.ktor:ktor-jackson:$ktor_version"
