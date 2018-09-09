@@ -17,7 +17,6 @@ apply plugin: 'war'
 mainClassName = 'ApplicationConfigurationKt'
 webAppDirName = 'webapp'
 
-
 sourceCompatibility = 1.8
 compileKotlin { kotlinOptions.jvmTarget = "1.8" }
 compileTestKotlin { kotlinOptions.jvmTarget = "1.8" }
@@ -31,16 +30,21 @@ repositories {
     maven { url "https://dl.bintray.com/kotlin/exposed" }
 }
 
+war {
+    webXml = file('web/WEB-INF/web.xml') // copies a file to WEB-INF/web.xml
+    archiveName = 'api.war'
+}
+
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation "io.ktor:ktor-server-servlet:$ktor_version"
-    implementation "ch.qos.logback:logback-classic:1.2.1"
-    implementation "com.fasterxml.jackson.core:jackson-databind:2.0.1"
-    implementation "io.ktor:ktor-jackson:$ktor_version"
-    implementation "io.ktor:ktor-server-core:$ktor_version"
-    implementation "io.ktor:ktor-auth:$ktor_version"
-    implementation "io.ktor:ktor-auth-jwt:$ktor_version"
-    implementation "org.jetbrains.exposed:exposed:0.10.4"
-    implementation "mysql:mysql-connector-java:5.1.46"
-    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    compile "io.ktor:ktor-server-servlet:$ktor_version"
+    compile "ch.qos.logback:logback-classic:1.2.1"
+    compile "com.fasterxml.jackson.core:jackson-databind:2.0.1"
+    compile "io.ktor:ktor-jackson:$ktor_version"
+    compile "io.ktor:ktor-server-core:$ktor_version"
+    compile "io.ktor:ktor-auth:$ktor_version"
+    compile "io.ktor:ktor-auth-jwt:$ktor_version"
+    compile "org.jetbrains.exposed:exposed:0.10.4"
+    compile "mysql:mysql-connector-java:5.1.46"
+    testCompile group: 'junit', name: 'junit', version: '4.12'
 }

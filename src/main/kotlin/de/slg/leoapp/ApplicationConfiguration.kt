@@ -5,9 +5,11 @@ import de.slg.leoapp.module.news.news
 import de.slg.leoapp.module.news.userExtensionNews
 import de.slg.leoapp.module.survey.survey
 import de.slg.leoapp.module.survey.userExtensionSurvey
+import de.slg.leoapp.module.user.UserTask
 import de.slg.leoapp.module.user.user
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
+import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
 import io.ktor.http.HttpStatusCode
@@ -16,6 +18,9 @@ import io.ktor.request.ApplicationRequest
 import io.ktor.request.header
 import io.ktor.response.respond
 import io.ktor.routing.Routing
+import io.ktor.routing.get
+import io.ktor.routing.route
+import io.ktor.routing.routing
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -41,11 +46,13 @@ fun Application.main() {
         }
     }
     install(Routing) {
-        user()
-        userExtensionNews()
-        userExtensionSurvey()
-        survey()
-        news()
+        route("/api") {
+            user()
+            userExtensionNews()
+            userExtensionSurvey()
+            survey()
+            news()
+        }
     }
 }
 
@@ -61,7 +68,7 @@ fun <T> runOnDatabase(statement: Transaction.() -> T): T {
             transactionIsolation = Connection.TRANSACTION_SERIALIZABLE,
             repetitionAttempts = 3,
             db = Database.connect(
-                    url = "jdbc:mysql://ucloud.sql.regioit.intern:3306/leoapp",
+                    url = "jdbc:mysql://localhost:3306/leoapp", //jdbc:mysql://ucloud.sql.regioit.intern:3306/leoapp
                     driver = "com.mysql.jdbc.Driver",
                     user = credentials.first,
                     password = credentials.second

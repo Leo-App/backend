@@ -13,6 +13,7 @@ import io.ktor.routing.get
 import io.ktor.routing.post
 
 fun Route.user() {
+
     //list all registered Users
     get("/user") {
         if (!call.request.checkAuthorized()) return@get
