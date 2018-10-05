@@ -5,22 +5,18 @@ import de.slg.leoapp.module.news.news
 import de.slg.leoapp.module.news.userExtensionNews
 import de.slg.leoapp.module.survey.survey
 import de.slg.leoapp.module.survey.userExtensionSurvey
-import de.slg.leoapp.module.user.UserTask
 import de.slg.leoapp.module.user.user
+import de.slg.leoapp.utils.Secure
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
-import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
 import io.ktor.http.HttpStatusCode
 import io.ktor.jackson.jackson
 import io.ktor.request.ApplicationRequest
-import io.ktor.request.header
 import io.ktor.response.respond
 import io.ktor.routing.Routing
-import io.ktor.routing.get
 import io.ktor.routing.route
-import io.ktor.routing.routing
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -78,7 +74,7 @@ fun <T> runOnDatabase(statement: Transaction.() -> T): T {
 }
 
 suspend fun ApplicationRequest.checkAuthorized(): Boolean {
-    val device = header("device")
+  /*  val device = header("device")
     val auth = header("authentication")
     if (device == null || auth == null) {
         call.respondError(401, "Not authorized")
@@ -87,6 +83,6 @@ suspend fun ApplicationRequest.checkAuthorized(): Boolean {
     if (!Secure.isAuthorized(device, auth)) {
         call.respondError(401, "Not authorized")
         return false
-    }
+    } */
     return true
 }

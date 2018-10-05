@@ -3,9 +3,11 @@
 out
 .gradle
 src/main/kotlin/de/slg/leoapp/Secure.kt
+src/main/kotlin/de/slg/leoapp/utils/Secure.kt
 *.class
 build/
 build
+Secure.kt
 
 # Log files
 *.log

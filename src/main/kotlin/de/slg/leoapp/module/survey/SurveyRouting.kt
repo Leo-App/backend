@@ -2,7 +2,7 @@ package de.slg.leoapp.module.survey
 
 import de.slg.leoapp.checkAuthorized
 import de.slg.leoapp.module.survey.data.PostSurvey
-import de.slg.leoapp.TaskResponse
+import de.slg.leoapp.utils.TaskResponse
 import de.slg.leoapp.respondError
 import de.slg.leoapp.respondSuccess
 import io.ktor.application.call

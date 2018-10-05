@@ -1,7 +1,10 @@
 package de.slg.leoapp.module.user
 
-import de.slg.leoapp.*
+import de.slg.leoapp.checkAuthorized
 import de.slg.leoapp.module.user.data.*
+import de.slg.leoapp.respondError
+import de.slg.leoapp.respondSuccess
+import de.slg.leoapp.utils.TaskResponse
 import io.ktor.application.call
 import io.ktor.request.isMultipart
 import io.ktor.request.receive
@@ -121,7 +124,10 @@ fun Route.user() {
             return@post
         }
 
+        println("id: $id")
+
         val checksum = call.receive<PostDeviceChecksum>()
+        println("checksum ${checksum.checksum}, device: ${checksum.device}")
         val taskStatus: TaskResponse = UserTask.addDeviceOrRegister(id, checksum)
 
         when(taskStatus) {
