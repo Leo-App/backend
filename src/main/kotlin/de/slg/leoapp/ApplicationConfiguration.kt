@@ -6,7 +6,6 @@ import de.slg.leoapp.module.news.userExtensionNews
 import de.slg.leoapp.module.survey.survey
 import de.slg.leoapp.module.survey.userExtensionSurvey
 import de.slg.leoapp.module.user.user
-import de.slg.leoapp.utils.Secure
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
 import io.ktor.application.install
@@ -17,10 +16,6 @@ import io.ktor.request.ApplicationRequest
 import io.ktor.response.respond
 import io.ktor.routing.Routing
 import io.ktor.routing.route
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.Transaction
-import org.jetbrains.exposed.sql.transactions.transaction
-import java.sql.Connection
 
 
 const val MEDIA_LOCATION = "/media"
@@ -56,21 +51,6 @@ suspend fun ApplicationCall.respondSuccess(value: Boolean = true) = respond("""{
 suspend fun ApplicationCall.respondError(code: Int, message: String) {
     response.status(HttpStatusCode.fromValue(code))
     respond(mapOf("error" to mapOf("code" to code, "message" to message)))
-}
-
-fun <T> runOnDatabase(statement: Transaction.() -> T): T {
-    val credentials = Secure.getDatabaseCredentials()
-    return transaction(
-            transactionIsolation = Connection.TRANSACTION_SERIALIZABLE,
-            repetitionAttempts = 3,
-            db = Database.connect(
-                    url = "jdbc:mysql://localhost:3306/leoapp", //jdbc:mysql://ucloud.sql.regioit.intern:3306/leoapp
-                    driver = "com.mysql.jdbc.Driver",
-                    user = credentials.first,
-                    password = credentials.second
-            ),
-            statement = statement
-    )
 }
 
 suspend fun ApplicationRequest.checkAuthorized(): Boolean {
