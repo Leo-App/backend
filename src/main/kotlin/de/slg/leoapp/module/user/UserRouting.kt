@@ -5,10 +5,12 @@ import de.slg.leoapp.module.user.data.*
 import de.slg.leoapp.respondError
 import de.slg.leoapp.respondSuccess
 import de.slg.leoapp.utils.TaskResponse
+import de.slg.leoapp.utils.parseJSON
 import io.ktor.application.call
 import io.ktor.request.isMultipart
 import io.ktor.request.receive
 import io.ktor.request.receiveMultipart
+import io.ktor.request.receiveText
 import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.delete
@@ -78,9 +80,9 @@ fun Route.user() {
             return@post
         }
 
-        val body = call.receive<PostFeatureUsage>()
+        val body = call.receiveText().parseJSON<PostFeatureUsage>()
 
-        if (body.featureId == null || body.time == null) {
+        if (body?.featureId == null || body.time == null) {
             call.respondError(400, "Bad Request")
             return@post
         }
@@ -100,12 +102,13 @@ fun Route.user() {
             return@post
         }
 
-        val postId = call.receive<PostArbitraryId>()
-        if (postId.id != null) {
+        val postId = call.receiveText().parseJSON<PostArbitraryId>()
+
+        if (postId?.id != null) {
             UserTask.registerSurveyVote(id, postId)
         } else {
-            val postIds = call.receive<PostArbitraryIds>()
-            if (postIds.ids == null) {
+            val postIds = call.receiveText().parseJSON<PostArbitraryIds>()
+            if (postIds?.ids == null) {
                 call.respondError(400, "Bad request")
                 return@post
             }
@@ -126,7 +129,13 @@ fun Route.user() {
 
         println("id: $id")
 
-        val checksum = call.receive<PostDeviceChecksum>()
+        val checksum = call.receiveText().parseJSON<PostDeviceChecksum>()
+
+        if (checksum == null) {
+            call.respondError(400, "Bad request")
+            return@post
+        }
+
         println("checksum ${checksum.checksum}, device: ${checksum.device}")
         val taskStatus: TaskResponse = UserTask.addDeviceOrRegister(id, checksum)
 
@@ -148,7 +157,13 @@ fun Route.user() {
             return@post
         }
 
-        val user = call.receive<PostUser>()
+        val user = call.receiveText().parseJSON<PostUser>()
+
+        if (user == null) {
+            call.respondError(400, "Bad Request")
+            return@post
+        }
+
         UserTask.updateUser(id, user)
         call.respondSuccess()
     }

@@ -1,5 +1,6 @@
 package de.slg.leoapp.utils
 
+import com.squareup.moshi.Moshi
 import tel.egram.kuery.Table
 import java.io.File
 import java.io.InputStream
@@ -27,4 +28,9 @@ fun Table.getColumnForFieldName(name: String): Table.Column? {
         }
     }
     return null
+}
+
+inline fun <reified R> String.parseJSON(): R? {
+    val moshi = Moshi.Builder().build()
+    return moshi.adapter(R::class.java).fromJson(this)
 }

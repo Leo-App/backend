@@ -63,7 +63,10 @@ object NewsTask {
         }
     }
 
-    fun addOrUpdateEntry(entry: PostEntry): Boolean {
+    fun addOrUpdateEntry(entry: PostEntry?): Boolean {
+
+        if (entry == null) return false
+
         val editIndicator = getEditIndicator(entry)
 
         if (editIndicator == null) { //editIndicator is null, so we want to add a new entry

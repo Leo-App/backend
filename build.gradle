@@ -41,9 +41,9 @@ war {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    compile 'com.squareup.moshi:moshi:1.7.0'
     compile "io.ktor:ktor-server-servlet:$ktor_version"
     compile "ch.qos.logback:logback-classic:1.2.1"
-    compile "com.fasterxml.jackson.core:jackson-databind:2.0.1"
     compile "io.ktor:ktor-jackson:$ktor_version"
     compile "io.ktor:ktor-server-core:$ktor_version"
     compile "io.ktor:ktor-auth:$ktor_version"

@@ -2,11 +2,12 @@ package de.slg.leoapp.module.survey
 
 import de.slg.leoapp.checkAuthorized
 import de.slg.leoapp.module.survey.data.PostSurvey
-import de.slg.leoapp.utils.TaskResponse
 import de.slg.leoapp.respondError
 import de.slg.leoapp.respondSuccess
+import de.slg.leoapp.utils.TaskResponse
+import de.slg.leoapp.utils.parseJSON
 import io.ktor.application.call
-import io.ktor.request.receive
+import io.ktor.request.receiveText
 import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.delete
@@ -40,7 +41,13 @@ fun Route.survey() {
     post("/survey") {
         if (!call.request.checkAuthorized()) return@post
 
-        val data = call.receive<PostSurvey>()
+        val data = call.receiveText().parseJSON<PostSurvey>()
+
+        if (data == null)  {
+            call.respondError(400, "Bad request")
+            return@post
+        }
+
         val status: TaskResponse = SurveyTask.addNewSurvey(data)
 
         when(status) {
